@@ -1,0 +1,127 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#5b5ce2">
+<title>StudyFlow AI — Révise plus intelligemment</title>
+<style>
+:root{--bg:#f6f7fb;--card:#fff;--ink:#20223a;--muted:#70738a;--primary:#5b5ce2;--primary2:#8586ff;--line:#e8e9f3;--green:#168a68}
+*{box-sizing:border-box}body{margin:0;font-family:Inter,ui-sans-serif,system-ui,-apple-system,Segoe UI,Roboto,Arial;background:var(--bg);color:var(--ink)}
+header{background:linear-gradient(120deg,#4c4fd1,#7778f5);color:white;padding:25px 18px 30px;border-radius:0 0 26px 26px}
+.wrap{max-width:1050px;margin:auto;padding:0 16px}header .brand{font-size:14px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;opacity:.9}
+header h1{font-size:clamp(27px,5vw,42px);line-height:1.1;margin:12px 0 9px}header p{margin:0;max-width:620px;color:#ededff;line-height:1.5}
+.badge{display:inline-block;background:#ffffff24;border:1px solid #ffffff4d;border-radius:99px;padding:6px 10px;font-size:12px;margin-top:17px}
+nav{display:flex;gap:8px;overflow:auto;padding:16px 0}
+nav button,.btn{border:0;border-radius:12px;padding:11px 14px;font-weight:700;cursor:pointer;font-size:14px}
+nav button{background:white;color:var(--muted);border:1px solid var(--line);white-space:nowrap}
+nav button.active,.btn.primary{background:var(--primary);color:white}
+.btn.secondary{background:#eeeeff;color:var(--primary)}.btn.ghost{background:#f2f3f8;color:var(--ink)}
+main{padding-bottom:38px}.grid{display:grid;grid-template-columns:repeat(12,1fr);gap:14px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:18px;box-shadow:0 4px 18px #22224406}
+.span-12{grid-column:span 12}.span-8{grid-column:span 8}.span-6{grid-column:span 6}.span-4{grid-column:span 4}
+.stat{font-size:28px;font-weight:800;margin-top:7px}.muted{color:var(--muted);font-size:13px}
+h2{font-size:20px;margin:0 0 14px}h3{font-size:16px;margin:0 0 8px}
+label{display:block;font-size:13px;font-weight:700;margin:12px 0 6px}
+input,textarea,select{width:100%;border:1px solid #dfe1ee;border-radius:11px;padding:12px;font:inherit;background:#fff;color:var(--ink)}
+textarea{min-height:145px;resize:vertical}
+.row{display:flex;gap:10px;flex-wrap:wrap;align-items:center}.row>*{flex:1}
+.actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}
+.notice{background:#f0f0ff;color:#494bb8;border-radius:12px;padding:12px;font-size:13px;line-height:1.5}
+.item{padding:12px 0;border-bottom:1px solid var(--line)}.item:last-child{border-bottom:0}
+.pill{display:inline-block;font-size:11px;padding:4px 8px;border-radius:99px;background:#e9f8f2;color:var(--green);font-weight:800}
+.flashcard{min-height:160px;display:flex;align-items:center;justify-content:center;text-align:center;padding:24px;border-radius:16px;background:linear-gradient(135deg,#f0f0ff,#fafaff);font-size:19px;font-weight:700;line-height:1.45}
+.hidden{display:none!important}.empty{color:var(--muted);font-size:14px;padding:10px 0}
+footer{text-align:center;color:var(--muted);font-size:12px;padding:20px}
+@media(max-width:700px){.span-8,.span-6,.span-4{grid-column:span 12}.card{padding:15px}header{padding-top:22px}}
+</style>
+</head>
+<body>
+<header><div class="wrap">
+<div class="brand">✦ StudyFlow AI</div>
+<h1>Révise plus intelligemment.</h1>
+<p>Transforme tes cours en fiches, entraîne-toi avec des quiz et organise tes révisions dans un seul espace.</p>
+<span class="badge">Prototype gratuit • Tes données restent sur cet appareil</span>
+</div></header>
+<div class="wrap">
+<nav aria-label="Navigation">
+<button class="active" data-tab="dashboard">Vue d’ensemble</button>
+<button data-tab="courses">Mes cours</button>
+<button data-tab="cards">Fiches de révision</button>
+<button data-tab="quiz">Quiz</button>
+<button data-tab="planner">Planning</button>
+</nav>
+<main>
+<section id="dashboard" class="tab">
+<div class="grid">
+<div class="card span-4"><div class="muted">Cours sauvegardés</div><div class="stat" id="statCourses">0</div></div>
+<div class="card span-4"><div class="muted">Fiches créées</div><div class="stat" id="statCards">0</div></div>
+<div class="card span-4"><div class="muted">Quiz terminés</div><div class="stat" id="statQuizzes">0</div></div>
+<div class="card span-8"><h2>Bienvenue sur StudyFlow 👋</h2><p>Commence par ajouter un cours ou colle tes notes dans le générateur pour créer une première fiche.</p><div class="actions"><button class="btn primary" onclick="showTab('courses')">Ajouter un cours</button><button class="btn secondary" onclick="showTab('cards')">Créer une fiche</button></div></div>
+<div class="card span-4"><h3>Petit conseil</h3><p class="muted">Révise en sessions courtes. Après avoir lu une fiche, essaie de reformuler les idées sans regarder le texte.</p></div>
+<div class="card span-12"><h2>Activité récente</h2><div id="recent" class="empty">Tes cours et fiches apparaîtront ici.</div></div>
+</div>
+</section>
+<section id="courses" class="tab hidden">
+<div class="grid">
+<div class="card span-6"><h2>Ajouter un cours</h2><label for="courseTitle">Nom du cours</label><input id="courseTitle" placeholder="Ex. Biologie — la cellule"><label for="courseText">Notes ou contenu du cours</label><textarea id="courseText" placeholder="Colle ici tes notes de cours…"></textarea><div class="actions"><button class="btn primary" id="saveCourse">Sauvegarder le cours</button><button class="btn secondary" id="makeFromCourse">Créer une fiche</button></div><p class="muted">Prototype : le texte est enregistré dans le stockage local du navigateur. Évite d'y mettre des données sensibles.</p></div>
+<div class="card span-6"><h2>Mes cours</h2><div id="courseList" class="empty">Aucun cours pour le moment.</div></div>
+</div>
+</section>
+<section id="cards" class="tab hidden">
+<div class="grid">
+<div class="card span-6"><h2>Créer une fiche de révision</h2><label for="notesInput">Colle le contenu de ton cours</label><textarea id="notesInput" placeholder="Colle ici un passage de ton cours…"></textarea><label for="cardTitle">Titre de la fiche</label><input id="cardTitle" placeholder="Ex. Les fonctions de la cellule"><div class="actions"><button class="btn primary" id="generateCard">Créer une fiche structurée</button></div><div class="notice" style="margin-top:12px">Cette première version organise le texte avec des règles simples. Elle n'utilise pas encore un véritable modèle d'IA.</div></div>
+<div class="card span-6"><h2>Ta fiche</h2><div id="generatedCard" class="empty">Ta fiche apparaîtra ici après sa création.</div><div class="actions"><button class="btn secondary" id="saveGenerated" disabled>Sauvegarder la fiche</button></div></div>
+<div class="card span-12"><h2>Fiches sauvegardées</h2><div id="savedCards" class="empty">Aucune fiche sauvegardée.</div></div>
+</div>
+</section>
+<section id="quiz" class="tab hidden">
+<div class="grid">
+<div class="card span-6"><h2>Créer un quiz</h2><label for="quizSource">Colle ton cours ou tes notes</label><textarea id="quizSource" placeholder="Colle quelques phrases de ton cours…"></textarea><div class="actions"><button class="btn primary" id="createQuiz">Générer des questions</button></div><p class="muted">Les questions sont créées à partir des phrases de ton texte. Vérifie toujours leur exactitude.</p></div>
+<div class="card span-6"><h2>Entraînement</h2><div id="quizArea" class="empty">Ton quiz apparaîtra ici.</div></div>
+</div>
+</section>
+<section id="planner" class="tab hidden">
+<div class="grid">
+<div class="card span-6"><h2>Ajouter un objectif</h2><label for="taskText">Que veux-tu réviser ?</label><input id="taskText" placeholder="Ex. Revoir le chapitre 2"><label for="taskDate">Date prévue</label><input id="taskDate" type="date"><div class="actions"><button class="btn primary" id="addTask">Ajouter au planning</button></div></div>
+<div class="card span-6"><h2>Mon planning</h2><div id="taskList" class="empty">Aucun objectif prévu.</div></div>
+</div>
+</section>
+</main>
+<footer>StudyFlow AI • Prototype de départ • Les données restent dans ce navigateur.</footer>
+</div>
+<script>
+const $=id=>document.getElementById(id);
+const load=(k,d=[])=>{try{return JSON.parse(localStorage.getItem('sf_'+k))||d}catch{return d}};
+const save=(k,v)=>localStorage.setItem('sf_'+k,JSON.stringify(v));
+let courses=load('courses'),cards=load('cards'),tasks=load('tasks'),quizCount=load('quizCount',0),pendingCard=null,quizItems=[],quizIndex=0,quizScore=0;
+function showTab(name){document.querySelectorAll('.tab').forEach(x=>x.classList.add('hidden'));$(name).classList.remove('hidden');document.querySelectorAll('nav button').forEach(b=>b.classList.toggle('active',b.dataset.tab===name));render()}
+document.querySelectorAll('nav button').forEach(b=>b.addEventListener('click',()=>showTab(b.dataset.tab)));
+function esc(s){return String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
+function render(){
+$('statCourses').textContent=courses.length;$('statCards').textContent=cards.length;$('statQuizzes').textContent=quizCount;
+$('courseList').innerHTML=courses.length?courses.map((c,i)=>`<div class="item"><strong>${esc(c.title)}</strong><p class="muted">${esc(c.text.slice(0,120))}${c.text.length>120?'…':''}</p><div class="actions"><button class="btn secondary" onclick="useCourse(${i})">Créer une fiche</button><button class="btn ghost" onclick="deleteCourse(${i})">Supprimer</button></div></div>`).join(''):'<div class="empty">Aucun cours pour le moment.</div>';
+$('savedCards').innerHTML=cards.length?cards.map((c,i)=>`<div class="item"><strong>${esc(c.title)}</strong><p>${esc(c.summary)}</p><div class="actions"><button class="btn ghost" onclick="deleteCard(${i})">Supprimer</button></div></div>`).join(''):'<div class="empty">Aucune fiche sauvegardée.</div>';
+$('taskList').innerHTML=tasks.length?tasks.map((t,i)=>`<div class="item"><label style="display:flex;gap:8px;align-items:center;margin:0"><input type="checkbox" ${t.done?'checked':''} onchange="toggleTask(${i})" style="width:auto">${esc(t.text)}</label><div class="muted">${esc(t.date||'Date non définie')}</div><button class="btn ghost" onclick="deleteTask(${i})">Supprimer</button></div>`).join(''):'<div class="empty">Aucun objectif prévu.</div>';
+$('recent').innerHTML=(courses.length||cards.length)?[...courses.slice(-3).reverse().map(c=>`<div class="item">📚 ${esc(c.title)} <span class="muted">— cours</span></div>`),...cards.slice(-3).reverse().map(c=>`<div class="item">📝 ${esc(c.title)} <span class="muted">— fiche</span></div>`)].join(''):'Tes cours et fiches apparaîtront ici.';
+}
+function makeSummary(text){let clean=text.replace(/\s+/g,' ').trim();let sentences=clean.split(/(?<=[.!?])\s+/).filter(s=>s.length>20);let bullets=sentences.slice(0,8);if(!bullets.length)bullets=[clean].filter(Boolean);return {summary:bullets.map(s=>'• '+s).join('\n'),keywords:[...new Set((clean.match(/\b[\p{L}]{7,}\b/gu)||[]).map(x=>x.toLowerCase()))].slice(0,10)}}
+$('saveCourse').onclick=()=>{let title=$('courseTitle').value.trim(),text=$('courseText').value.trim();if(!title||!text){alert('Ajoute un titre et le contenu du cours.');return}courses.push({title,text,created:new Date().toISOString()});save('courses',courses);$('courseTitle').value='';$('courseText').value='';render();alert('Cours sauvegardé sur cet appareil !')};
+function useCourse(i){$('notesInput').value=courses[i].text;$('cardTitle').value=courses[i].title;showTab('cards')}
+$('makeFromCourse').onclick=()=>{if(!$('courseText').value.trim()){alert('Colle d’abord le contenu du cours.');return}$('notesInput').value=$('courseText').value;$('cardTitle').value=$('courseTitle').value||'Ma fiche de révision';showTab('cards');generateCard()};
+function generateCard(){let text=$('notesInput').value.trim();if(!text){alert('Colle le contenu du cours.');return}let title=$('cardTitle').value.trim()||'Fiche de révision';let s=makeSummary(text);pendingCard={title,summary:s.summary,keywords:s.keywords,source:text};$('generatedCard').innerHTML=`<h3>${esc(title)}</h3><p style="white-space:pre-line;line-height:1.7">${esc(s.summary)}</p><p><strong>Mots-clés à retenir :</strong> ${esc(s.keywords.join(', ')||'Ajoute plus de texte pour extraire les mots-clés.')}</p>`;$('saveGenerated').disabled=false}
+$('generateCard').onclick=generateCard;
+$('saveGenerated').onclick=()=>{if(!pendingCard)return;cards.push(pendingCard);save('cards',cards);pendingCard=null;$('saveGenerated').disabled=true;render();alert('Fiche sauvegardée !')};
+function deleteCourse(i){if(confirm('Supprimer ce cours ?')){courses.splice(i,1);save('courses',courses);render()}}
+function deleteCard(i){if(confirm('Supprimer cette fiche ?')){cards.splice(i,1);save('cards',cards);render()}}
+$('addTask').onclick=()=>{let text=$('taskText').value.trim();if(!text){alert('Écris un objectif.');return}tasks.push({text,date:$('taskDate').value,done:false});save('tasks',tasks);$('taskText').value='';$('taskDate').value='';render()};
+function toggleTask(i){tasks[i].done=!tasks[i].done;save('tasks',tasks);render()}
+function deleteTask(i){tasks.splice(i,1);save('tasks',tasks);render()}
+$('createQuiz').onclick=()=>{let text=$('quizSource').value.trim();if(text.length<40){alert('Colle un peu plus de contenu pour créer un quiz.');return}let sentences=text.replace(/\s+/g,' ').split(/(?<=[.!?])\s+/).filter(s=>s.length>30);quizItems=sentences.slice(0,5).map((s,i)=>({q:'Quelle phrase reprend une idée importante de ton cours ?',answer:s,options:shuffle([s,...sentences.filter(x=>x!==s).slice(0,3)])}));if(!quizItems.length){alert('Ajoute plusieurs phrases complètes.');return}quizIndex=0;quizScore=0;renderQuestion()};
+function shuffle(a){return a.sort(()=>Math.random()-.5)}
+function renderQuestion(){if(quizIndex>=quizItems.length){$('quizArea').innerHTML=`<h3>Quiz terminé !</h3><p>Tu as identifié ${quizScore} réponse(s) sur ${quizItems.length}.</p><button class="btn primary" onclick="showTab('quiz')">Recommencer un quiz</button>`;quizCount++;save('quizCount',quizCount);render();return}let q=quizItems[quizIndex];$('quizArea').innerHTML=`<div class="muted">Question ${quizIndex+1} sur ${quizItems.length}</div><h3 style="margin-top:10px">${esc(q.q)}</h3><p class="muted">Choisis la phrase qui correspond à l'idée visée par cette question.</p>${q.options.map(o=>`<button class="btn ghost" style="display:block;width:100%;text-align:left;margin:8px 0;white-space:normal" onclick="answerQuiz(${JSON.stringify(o).replace(/"/g,'&quot;')})">${esc(o)}</button>`).join('')}`}
+function answerQuiz(o){if(o===quizItems[quizIndex].answer)quizScore++;quizIndex++;renderQuestion()}
+render();
+</script>
+</body>
+</html>
