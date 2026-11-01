@@ -133,5 +133,84 @@ render();
   <p style="font-size:12px;">Mode test Stripe — aucun paiement réel</p>
 </div>
 
+<!-- CONNEXION STUDYFLOW AI -->
+<div id="auth-box" style="max-width:420px;margin:30px auto;padding:20px;border:1px solid #ddd;border-radius:14px;">
+  <h2>Bienvenue sur StudyFlow AI</h2>
+  <p>Crée ton compte ou connecte-toi.</p>
+
+  <input id="auth-email" type="email" placeholder="Ton adresse e-mail"
+    style="width:100%;padding:12px;margin:8px 0;box-sizing:border-box;">
+
+  <input id="auth-password" type="password" placeholder="Ton mot de passe"
+    style="width:100%;padding:12px;margin:8px 0;box-sizing:border-box;">
+
+  <button id="auth-signup" style="padding:12px;margin:5px;">Créer mon compte</button>
+  <button id="auth-login" style="padding:12px;margin:5px;">Se connecter</button>
+  <button id="auth-logout" style="padding:12px;margin:5px;display:none;">Se déconnecter</button>
+
+  <p id="auth-message" role="status"></p>
+</div>
+
+<script type="module">
+import { createClient } from
+  'https://esm.sh/@supabase/supabase-js@2';
+
+const SUPABASE_URL = 'https://crecrzasvycohjeeddrn.supabase.co';
+const SUPABASE_KEY = sb_publishable_mKlyF4xL8OIUbMJ28XnzXw_yNuDCtiU
+
+const supabase = createClient(SUPABASE_URL, SUPABASE_KEY);
+
+const message = document.getElementById('auth-message');
+const signup = document.getElementById('auth-signup');
+const login = document.getElementById('auth-login');
+const logout = document.getElementById('auth-logout');
+
+function showMessage(text) {
+  message.textContent = text;
+}
+
+function getCredentials() {
+  return {
+    email: document.getElementById('auth-email').value.trim(),
+    password: document.getElementById('auth-password').value
+  };
+}
+
+signup.addEventListener('click', async () => {
+  const { email, password } = getCredentials();
+  if (!email || password.length < 8) {
+    showMessage('Entre un e-mail et un mot de passe de 8 caractères minimum.');
+    return;
+  }
+
+  const { error } = await supabase.auth.signUp({ email, password });
+  showMessage(error ? error.message :
+    'Compte créé ! Vérifie tes e-mails pour confirmer ton adresse.');
+});
+
+login.addEventListener('click', async () => {
+  const { email, password } = getCredentials();
+  const { error } = await supabase.auth.signInWithPassword({ email, password });
+  showMessage(error ? error.message : 'Connexion réussie !');
+});
+
+logout.addEventListener('click', async () => {
+  const { error } = await supabase.auth.signOut();
+  showMessage(error ? error.message : 'Tu es déconnecté.');
+});
+
+async function updateAuthDisplay() {
+  const { data } = await supabase.auth.getSession();
+  const connected = !!data.session;
+  signup.style.display = connected ? 'none' : 'inline-block';
+  login.style.display = connected ? 'none' : 'inline-block';
+  logout.style.display = connected ? 'inline-block' : 'none';
+  if (connected) showMessage('Connecté : ' + data.session.user.email);
+}
+
+supabase.auth.onAuthStateChange(() => updateAuthDisplay());
+updateAuthDisplay();
+</script>
+<!-- FIN CONNEXION STUDYFLOW AI -->
 </body>
 </html>
